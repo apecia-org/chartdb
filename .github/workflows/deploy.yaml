@@ -21,8 +21,7 @@ jobs:
           echo "[INFO] Setting up build environment for site project"
           # Install Node.js (adjust version or replace with your tool, e.g., Python, Hugo)
           curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-          npm install vite -g
+          sudo apt-get install -y nodejs npm 
           # Verify Node.js and npm versions
           node --version
           npm --version
@@ -39,6 +38,7 @@ jobs:
           echo "https://${GIT_USER}:${GIT_TOKEN}@github.com" > ~/.git-credentials
           # Install dependencies (e.g., for Node.js project)
           npm install
+          npm install vite
           # Build the site (replace with your build command, e.g., 'yarn build', 'hugo', 'jekyll build')
           npm run build
           # Verify build output exists (adjust 'build' to your output folder, e.g., 'dist', 'public')
