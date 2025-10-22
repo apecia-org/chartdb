@@ -16,15 +16,11 @@ jobs:
         with:
           ref: ${{ secrets.repo_branch }}
 
-      - name: Set up build environment
-        run: |
-          echo "[INFO] Setting up build environment for site project"
-          # Install Node.js (adjust version or replace with your tool, e.g., Python, Hugo)
-          curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-          sudo apt-get install -y nodejs npm 
-          # Verify Node.js and npm versions
-          node --version
-          npm --version
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # Specify the desired Node.js version (e.g., 16, 18, 20)
+          cache: 'npm' # Optional: Cache npm dependencies for faster builds
 
       - name: Build the site project
         env:
@@ -33,6 +29,8 @@ jobs:
           BRANCH: ${{ secrets.repo_branch }}
         run: |
           echo "[INFO] Installing dependencies and building the site"
+          node --version
+          npm --version
           # Configure Git authentication (if needed for private dependencies)
           git config --global credential.helper store
           echo "https://${GIT_USER}:${GIT_TOKEN}@github.com" > ~/.git-credentials
