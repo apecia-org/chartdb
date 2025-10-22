@@ -22,7 +22,6 @@ jobs:
           # Install Node.js (adjust version or replace with your tool, e.g., Python, Hugo)
           curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt-get install -y nodejs
-          sudo apt-get install -y npm
           npm install vite -g
           # Verify Node.js and npm versions
           node --version
