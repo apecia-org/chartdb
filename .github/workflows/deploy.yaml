@@ -1,0 +1,121 @@
+name: Deploy to AI Storage Server
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+
+    steps:
+      # Step 1: Clone and build the site project
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ secrets.repo_branch }}
+
+      - name: Set up build environment
+        run: |
+          echo "[INFO] Setting up build environment for site project"
+          # Install Node.js (adjust version or replace with your tool, e.g., Python, Hugo)
+          curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          sudo apt-get install -y npm
+          npm install vite -g
+          # Verify Node.js and npm versions
+          node --version
+          npm --version
+
+      - name: Build the site project
+        env:
+          GIT_USER: ${{ secrets.git_user }}
+          GIT_TOKEN: ${{ secrets.git_token }}
+          BRANCH: ${{ secrets.repo_branch }}
+        run: |
+          echo "[INFO] Installing dependencies and building the site"
+          # Configure Git authentication (if needed for private dependencies)
+          git config --global credential.helper store
+          echo "https://${GIT_USER}:${GIT_TOKEN}@github.com" > ~/.git-credentials
+          # Install dependencies (e.g., for Node.js project)
+          npm install
+          # Build the site (replace with your build command, e.g., 'yarn build', 'hugo', 'jekyll build')
+          npm run build
+          # Verify build output exists (adjust 'build' to your output folder, e.g., 'dist', 'public')
+          if [ -d "dist" ]; then
+            mv ./dist/* ./server/nginx/html
+            echo "[INFO] Build folder created successfully"
+          else
+            echo "[ERROR] Build folder not found"
+            exit 1
+          fi
+
+      # Step 2: Set up SSH keys from secrets
+      - name: Set up SSH access
+        run: |
+          echo "[INFO] Setting up SSH credentials"
+          mkdir -p ~/.ssh
+          echo "${{ secrets.destination_ssh_key }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          echo "[INFO] Adding remote host to known_hosts"
+          ssh-keyscan -p 22 ${{ secrets.destination_host }} >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      # Step 3 & 4: Connect to target device and stop current service
+      - name: Connect and stop service via SSH
+        env:
+          DESTINATION_HOST: ${{ secrets.destination_host }}
+          DESTINATION_USER: ${{ secrets.destination_user }}
+          DESTINATION_PATH: ${{ secrets.destination_path }}
+        run: |
+          echo "[INFO] Connecting to ${DESTINATION_HOST} as ${DESTINATION_USER}"
+          ssh ${DESTINATION_USER}@${DESTINATION_HOST} << 'ENDSSH'
+            echo "[INFO] Hostname: $(hostname)"
+            cd "${DESTINATION_PATH}" || { echo "[ERROR] ${DESTINATION_PATH} not found"; exit 1; }
+            echo "[INFO] Stopping the running Docker Compose service"
+            docker compose down || true
+            echo "[INFO] Stop step finished"
+          ENDSSH
+
+      # Step 5: Transfer build folder to target device
+      - name: Transfer build folder to target device
+        env:
+          DESTINATION_HOST: ${{ secrets.destination_host }}
+          DESTINATION_USER: ${{ secrets.destination_user }}
+          DESTINATION_PATH: ${{ secrets.destination_path }}
+        run: |
+          echo "[INFO] Transferring build folder to ${DESTINATION_HOST}:${DESTINATION_PATH}"
+          # Transfer the build folder (adjust 'build' to your output folder, e.g., 'dist', 'public')
+          scp -r ./server ${DESTINATION_USER}@${DESTINATION_HOST}:${DESTINATION_PATH}/server
+          echo "[INFO] Build folder transferred successfully"
+
+      # Step 6: Start the Docker Compose service
+      - name: Start service via SSH
+        env:
+          DESTINATION_HOST: ${{ secrets.destination_host }}
+          DESTINATION_USER: ${{ secrets.destination_user }}
+          DESTINATION_PATH: ${{ secrets.destination_path }}
+        run: |
+          echo "[INFO] Connecting to ${DESTINATION_HOST} as ${DESTINATION_USER}"
+          ssh ${DESTINATION_USER}@${DESTINATION_HOST} << 'ENDSSH'
+            echo "[INFO] Hostname: $(hostname)"
+            echo "[INFO] Navigating to application directory: ${DESTINATION_PATH}"
+            cd ${DESTINATION_PATH/server} || { echo "[ERROR] Directory ${DESTINATION_PATH} not found"; exit 1; }
+            echo "[INFO] Starting Docker Compose service"
+          
+            # Ensure Docker Compose is installed (optional, remove if already present)
+            if ! command -v docker-compose >/dev/null 2>&1; then
+              echo "[INFO] Installing Docker Compose"
+              sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+            fi
+            # Start the service (assumes docker-compose.yml is in DESTINATION_PATH)
+            docker-compose up -d
+            if [ $? -eq 0 ]; then
+              echo "[SUCCESS] Docker Compose service started"
+            else
+              echo "[ERROR] Failed to start Docker Compose service"
+              exit 1
+            fi
+          ENDSSH
