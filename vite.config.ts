@@ -34,6 +34,7 @@ export default defineConfig({
         rollupOptions: {
             external: (id) => /__test__/.test(id),
             output: {
+                
                 assetFileNames: (assetInfo) => {
                     if (
                         assetInfo.names &&
@@ -45,6 +46,7 @@ export default defineConfig({
                     }
                     return 'assets/[name]-[hash][extname]';
                 },
+                
             },
         },
     },

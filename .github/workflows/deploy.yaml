@@ -26,13 +26,12 @@ jobs:
           GIT_USER: ${{ secrets.git_user }}
           GIT_TOKEN: ${{ secrets.git_token }}
           BRANCH: ${{ secrets.repo_branch }}
+          NODE_OPTIONS: --max-old-space-size=4096 # Set Node.js memory to 4 GB
         run: |
           echo "[INFO] Installing dependencies and building the site"
           node --version
           npm --version
-          # Configure Git authentication (if needed for private dependencies)
-          git config --global credential.helper store
-          echo "https://${GIT_USER}:${GIT_TOKEN}@github.com" > ~/.git-credentials
+         
           # Install dependencies (e.g., for Node.js project)
           npm install
           npm install vite
