@@ -1,0 +1,17 @@
+# Use official Nginx base image
+FROM nginx:latest
+
+# Remove default Nginx configuration
+RUN rm /etc/nginx/nginx.conf
+
+# Copy custom nginx.conf to the container
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Copy static web files from the html folder to /usr/share/nginx/html
+COPY html /etc/nginx/html
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx in the foreground
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,1 @@
+var u={};Object.defineProperty(u,"__esModule",{value:!0});var a=["秒","分钟","小时","天","周","个月","年"];function l(e,t){if(t===0)return["刚刚","片刻后"];var r=a[~~(t/2)];return[e+" "+r+"前",e+" "+r+"后"]}var o=u.default=l;const _=Object.freeze(Object.defineProperty({__proto__:null,default:o},Symbol.toStringTag,{value:"Module"}));export{_ as z};

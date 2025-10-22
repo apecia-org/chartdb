@@ -36,7 +36,16 @@ services:
       - "3306:3306"
     networks:
       - app-network
-
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - app-network
 volumes:
   db-data:
 
