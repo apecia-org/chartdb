@@ -39,8 +39,10 @@ jobs:
           # Build the site (replace with your build command, e.g., 'yarn build', 'hugo', 'jekyll build')
           npm run build
           # Verify build output exists (adjust 'build' to your output folder, e.g., 'dist', 'public')
+          
           if [ -d "dist" ]; then
-            mv ./dist/* ./server/nginx/html
+            mv ./dist ./html
+            mv ./html ./server/nginx
             echo "[INFO] Build folder created successfully"
           else
             echo "[ERROR] Build folder not found"
