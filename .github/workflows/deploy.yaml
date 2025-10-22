@@ -3,7 +3,7 @@ name: Deploy to AI Storage Server
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   deploy:
