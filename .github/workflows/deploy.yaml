@@ -29,6 +29,7 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096 # Set Node.js memory to 4 GB
         run: |
           echo "[INFO] Installing dependencies and building the site"
+          pwd
           node --version
           npm --version
          
