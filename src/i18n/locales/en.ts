@@ -316,13 +316,21 @@ export const en = {
                 tables_count: 'Tables',
             },
             cancel: 'Cancel',
+            new: 'New',
             open: 'Open',
 
             diagram_actions: {
                 open: 'Open',
                 duplicate: 'Duplicate',
                 delete: 'Delete',
+                rename: 'Rename'
             },
+        },
+
+        rename_diagram_dialog: {
+            title: 'Rename Diagram',
+            close: 'Close',
+            confirm: 'Submit',
         },
 
         export_sql_dialog: {

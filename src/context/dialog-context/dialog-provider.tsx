@@ -5,6 +5,8 @@ import type { CreateDiagramDialogProps } from '@/dialogs/create-diagram-dialog/c
 import { CreateDiagramDialog } from '@/dialogs/create-diagram-dialog/create-diagram-dialog';
 import type { OpenDiagramDialogProps } from '@/dialogs/open-diagram-dialog/open-diagram-dialog';
 import { OpenDiagramDialog } from '@/dialogs/open-diagram-dialog/open-diagram-dialog';
+import type { RenameDiagramDialogProps } from '@/dialogs/rename-diagram-dialog/rename-diagram-dialog';
+import { RenameDiagramDialog } from '@/dialogs/rename-diagram-dialog/rename-diagram-dialog';
 import type { ExportSQLDialogProps } from '@/dialogs/export-sql-dialog/export-sql-dialog';
 import { ExportSQLDialog } from '@/dialogs/export-sql-dialog/export-sql-dialog';
 import { DatabaseType } from '@/lib/domain/database-type';
@@ -47,6 +49,19 @@ export const DialogProvider: React.FC<React.PropsWithChildren> = ({
                 setOpenOpenDiagramDialog(true);
             },
             [setOpenOpenDiagramDialog]
+        );
+
+    // Rename Diagram Dialog
+    const [openRenameDiagramDialog, setOpenRenameDiagramDialog] = useState(false);
+    const [renameDiagramDialogParams, setRenameDiagramDialogParams] =
+        useState<Omit<RenameDiagramDialogProps, 'dialog'>>();
+    const openRenameDiagramDialogHandler: DialogContext['openRenameDiagramDialog'] =
+        useCallback(
+            (props) => {
+                setRenameDiagramDialogParams(props);
+                setOpenRenameDiagramDialog(true);
+            },
+            [setOpenRenameDiagramDialog]
         );
 
     const [openCreateRelationshipDialog, setOpenCreateRelationshipDialog] =
@@ -137,6 +152,8 @@ export const DialogProvider: React.FC<React.PropsWithChildren> = ({
                 closeCreateDiagramDialog: () => setOpenNewDiagramDialog(false),
                 openOpenDiagramDialog: openOpenDiagramDialogHandler,
                 closeOpenDiagramDialog: () => setOpenOpenDiagramDialog(false),
+                openRenameDiagramDialog: openRenameDiagramDialogHandler,
+                closeRenameDiagramDialog: () => setOpenRenameDiagramDialog(false),
                 openExportSQLDialog: openExportSQLDialogHandler,
                 closeExportSQLDialog: () => setOpenExportSQLDialog(false),
                 openCreateRelationshipDialog:
@@ -168,6 +185,10 @@ export const DialogProvider: React.FC<React.PropsWithChildren> = ({
             <OpenDiagramDialog
                 dialog={{ open: openOpenDiagramDialog }}
                 {...openDiagramDialogParams}
+            />
+            <RenameDiagramDialog
+                dialog={{ open: openRenameDiagramDialog }}
+                {...renameDiagramDialogParams}
             />
             <ExportSQLDialog
                 dialog={{ open: openExportSQLDialog }}

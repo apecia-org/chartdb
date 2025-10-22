@@ -37,7 +37,7 @@ export const OpenDiagramDialog: React.FC<OpenDiagramDialogProps> = ({
     dialog,
     canClose = true,
 }) => {
-    const { closeOpenDiagramDialog, openCreateDiagramDialog } = useDialog();
+    const { closeOpenDiagramDialog, openCreateDiagramDialog, openRenameDiagramDialog, closeRenameDiagramDialog } = useDialog();
     const { t } = useTranslation();
     const { updateConfig } = useConfig();
     const navigate = useNavigate();
@@ -236,6 +236,8 @@ export const OpenDiagramDialog: React.FC<OpenDiagramDialogProps> = ({
                                                     diagrams.length
                                                 }
                                                 refetch={fetchDiagrams}
+                                                openRenameDiagramDialog={openRenameDiagramDialog}
+                                                closeRenameDiagramDialog={closeRenameDiagramDialog}
                                             />
                                         </TableCell>
                                     </TableRow>

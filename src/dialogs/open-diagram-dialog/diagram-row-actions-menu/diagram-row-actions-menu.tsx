@@ -7,8 +7,9 @@ import {
     DropdownMenuTrigger,
 } from '@/components/dropdown-menu/dropdown-menu';
 import { Button } from '@/components/button/button';
-import { Ellipsis, Layers2, SquareArrowOutUpRight, Trash2 } from 'lucide-react';
+import { Ellipsis, Layers2, SquareArrowOutUpRight, Trash2, Pencil } from 'lucide-react';
 import { useChartDB } from '@/hooks/use-chartdb';
+import { useDialog } from '@/hooks/use-dialog';
 import type { Diagram } from '@/lib/domain';
 import { useStorage } from '@/hooks/use-storage';
 import { cloneDiagram } from '@/lib/clone';
@@ -27,6 +28,7 @@ export const DiagramRowActionsMenu: React.FC<DiagramRowActionsMenuProps> = ({
     refetch,
     numberOfDiagrams,
 }) => {
+    const { openRenameDiagramDialog } = useDialog();
     const { diagramId } = useChartDB();
     const { deleteDiagram, addDiagram } = useStorage();
     const { t } = useTranslation();
@@ -55,6 +57,18 @@ export const DiagramRowActionsMenu: React.FC<DiagramRowActionsMenuProps> = ({
         refetch();
     }, [addDiagram, refetch, diagram]);
 
+
+    // const onRename = useCallback(() => {
+    //     openRenameDiagramDialog({
+    //         diagram,
+    //         refetch: () => refetch()
+    //         // onConfirm: () => {
+    //         //     console.log('refetch after rename');
+    //         //     refetch();
+    //         // },
+    //     });
+    // }, [refetch, diagram]);
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -68,6 +82,16 @@ export const DiagramRowActionsMenu: React.FC<DiagramRowActionsMenuProps> = ({
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                    onSelect={(e) => {
+                        e.preventDefault(); 
+                        openRenameDiagramDialog({ diagram, refetch })
+                    }}
+                    className="flex justify-between gap-4"
+                >
+                    {t('open_diagram_dialog.diagram_actions.rename')}
+                    <Pencil className="size-3.5" />
+                </DropdownMenuItem>
                 <DropdownMenuItem
                     onClick={onOpen}
                     className="flex justify-between gap-4"

@@ -9,6 +9,7 @@ import type { ImportDiagramDialogProps } from '@/dialogs/import-diagram-dialog/i
 import type { CreateRelationshipDialogProps } from '@/dialogs/create-relationship-dialog/create-relationship-dialog';
 import type { OpenDiagramDialogProps } from '@/dialogs/open-diagram-dialog/open-diagram-dialog';
 import type { CreateDiagramDialogProps } from '@/dialogs/create-diagram-dialog/create-diagram-dialog';
+import type { RenameDiagramDialogProps } from '@/dialogs/rename-diagram-dialog/rename-diagram-dialog';
 
 export interface DialogContext {
     // Create diagram dialog
@@ -49,6 +50,12 @@ export interface DialogContext {
     openStarUsDialog: () => void;
     closeStarUsDialog: () => void;
 
+    // Rename diagram dialog
+    openRenameDiagramDialog: (
+        params?: Omit<RenameDiagramDialogProps, 'dialog'>
+    )  => void;
+    closeRenameDiagramDialog: () => void;
+
     // Export image dialog
     openExportImageDialog: (
         params: Omit<ExportImageDialogProps, 'dialog'>
@@ -83,6 +90,8 @@ export const dialogContext = createContext<DialogContext>({
     closeTableSchemaDialog: emptyFn,
     openStarUsDialog: emptyFn,
     closeStarUsDialog: emptyFn,
+    openRenameDiagramDialog: emptyFn,
+    closeRenameDiagramDialog: emptyFn,
     openExportImageDialog: emptyFn,
     closeExportImageDialog: emptyFn,
     openExportDiagramDialog: emptyFn,
