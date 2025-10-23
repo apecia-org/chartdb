@@ -85,7 +85,7 @@ jobs:
         run: |
           echo "[INFO] Transferring build folder to ${DESTINATION_HOST}:${DESTINATION_PATH}"
           # Transfer the build folder (adjust 'build' to your output folder, e.g., 'dist', 'public')
-          scp -r ./server ${DESTINATION_USER}@${DESTINATION_HOST}:${DESTINATION_PATH}/server
+          scp -r ./server ${DESTINATION_USER}@${DESTINATION_HOST}:${DESTINATION_PATH}
           echo "[INFO] Build folder transferred successfully"
 
       # Step 6: Start the Docker Compose service
@@ -99,7 +99,7 @@ jobs:
           ssh ${DESTINATION_USER}@${DESTINATION_HOST} << 'ENDSSH'
             echo "[INFO] Hostname: $(hostname)"
             echo "[INFO] Navigating to application directory: ${DESTINATION_PATH}"
-            cd ${DESTINATION_PATH/server} || { echo "[ERROR] Directory ${DESTINATION_PATH} not found"; exit 1; }
+            cd ${DESTINATION_PATH} || { echo "[ERROR] Directory ${DESTINATION_PATH} not found"; exit 1; }
             echo "[INFO] Starting Docker Compose service"
           
             # Ensure Docker Compose is installed (optional, remove if already present)
