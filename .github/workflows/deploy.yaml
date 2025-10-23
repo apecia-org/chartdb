@@ -23,9 +23,6 @@ jobs:
     
       - name: Build the site project
         env:
-          GIT_USER: ${{ secrets.git_user }}
-          GIT_TOKEN: ${{ secrets.git_token }}
-          BRANCH: ${{ secrets.repo_branch }}
           NODE_OPTIONS: --max-old-space-size=4096 # Set Node.js memory to 4 GB
         run: |
           echo "[INFO] Installing dependencies and building the site"
