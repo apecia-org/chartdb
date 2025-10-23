@@ -97,7 +97,7 @@ jobs:
         run: |
           echo "[INFO] Connecting to ${DESTINATION_HOST} as ${DESTINATION_USER}"
           ssh ${DESTINATION_USER}@${DESTINATION_HOST} << 'ENDSSH'
-            cd /home/iotadmin/docker/chartdb/server || { echo "[ERROR] ${DESTINATION_PATH} not found"; exit 1; }
+            cd /home/iotadmin/docker/chartdb || { echo "[ERROR] ${DESTINATION_PATH} not found"; exit 1; }
             # Start the service (assumes docker-compose.yml is in DESTINATION_PATH)
             docker compose up -d
             if [ $? -eq 0 ]; then
