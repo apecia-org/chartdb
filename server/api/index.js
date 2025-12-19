@@ -8,7 +8,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: ['http://localhost:5174','http://localhost:5173', 'http://localhost:8080', 'http://host.docker.internal:5173', 'http://host.docker.internal:8080'],
+  origin: '*',///['http://localhost:3000','http://localhost:80', 'http://localhost:8080', 'http://host.docker.internal:5173', 'http://host.docker.internal:8080'],
   methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type']
 }));
