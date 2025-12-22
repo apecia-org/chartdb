@@ -19,7 +19,7 @@ const formatNumberDateTime = (isoDate: number | undefined): string => {
   return new Date(isoDate).toISOString().slice(0, 19).replace('T', ' ');
 };
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+const API_BASE = 'http://192.168.2.48:80'// import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 const apiFetch = async <T>(url: string, options: RequestInit = {}): Promise<T | undefined> => {
   try {
